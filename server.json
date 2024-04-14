@@ -1,0 +1,40 @@
+{
+	"variables": {
+		"client_id": "187a87e0-cc4e-4ba4-9af7-e2c0a90356ff",
+		"client_secret": "wY28Q~lsBsbJqoXloAbq2xkXbbpI5foHwocm~btB",
+		"subscription_id": "0ee6d06f-69ab-4b3b-9f35-003e1b6eb227"
+	},
+	"builders": [
+		{
+			"type": "azure-arm",
+			"client_id": "{{user `client_id`}}",
+			"client_secret": "{{user `client_secret`}}",
+			"subscription_id": "{{user `subscription_id`}}",
+			"os_type": "Linux",
+			"image_publisher": "Canonical",
+			"image_offer": "UbuntuServer",
+			"image_sku": "18.04-LTS",
+			"managed_image_resource_group_name": "Azuredevops",
+			"managed_image_name": "myPackerImage",
+			"location": "East US",
+			"vm_size": "Standard_B1s",
+			"azure_tags": {
+				"Env": "Test",
+				"Dev": "AnNT40"
+			}
+		}
+	],
+	"provisioners": [
+		{
+			"execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E sh '{{ .Path }}'",
+			"inline": [
+				"sudo apt-get update",
+				"sudo apt-get install -y apache2",
+				"sudo systemctl start apache2",
+				"echo 'Hello, World!' > index.html"
+			],
+			"inline_shebang": "/bin/sh -x",
+			"type": "shell"
+		}
+	]
+}
